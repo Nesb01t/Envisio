@@ -6,17 +6,27 @@ import {
   Patch,
   Param,
   Delete,
+  UploadedFile,
+  UseInterceptors,
 } from '@nestjs/common';
 import { BinaryFilesService } from './binary-files.service';
 import { CreateBinaryFileDto } from './dto/create-binary-file.dto';
 import { UpdateBinaryFileDto } from './dto/update-binary-file.dto';
+import { FileInterceptor } from '@nestjs/platform-express';
 
 @Controller('binary-files')
 export class BinaryFilesController {
   constructor(private readonly binaryFilesService: BinaryFilesService) {}
 
   @Post()
-  create(@Body() createBinaryFileDto: CreateBinaryFileDto) {
+  @UseInterceptors(FileInterceptor('file'))
+  create(@UploadedFile() file: Express.Multer.File) {
+    console.log(file);
+    const createBinaryFileDto: CreateBinaryFileDto = {
+      originalName: file.originalname,
+      data: file.buffer,
+      size: file.size,
+    };
     return this.binaryFilesService.create(createBinaryFileDto);
   }
 

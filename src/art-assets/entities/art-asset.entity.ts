@@ -6,6 +6,7 @@ export class ArtAsset {
   updatedAt: Date;
 
   binaryFileId: number;
+  historyId: number[];
 }
 
 export enum ArtAssetType {

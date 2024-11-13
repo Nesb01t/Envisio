@@ -12,6 +12,8 @@ export class BinaryFilesService {
     const newBinaryFile: BinaryFile = {
       id: this.idCounter++,
       data: createBinaryFileDto.data,
+      originalName: createBinaryFileDto.originalName,
+      size: createBinaryFileDto.size,
       createdAt: new Date(),
       updatedAt: new Date(),
     };
@@ -21,6 +23,10 @@ export class BinaryFilesService {
 
   findAll(): BinaryFile[] {
     return this.binaryFiles;
+  }
+
+  findAllBinaryFileSizes(): number[] {
+    return this.binaryFiles.map((file) => file.data.length);
   }
 
   findOne(id: number): BinaryFile {

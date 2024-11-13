@@ -12,6 +12,7 @@ export class ArtAssetsService {
     const newArtAsset: ArtAsset = {
       id: this.idCounter++,
       ...createArtAssetDto,
+      historyId: [],
       createdAt: new Date(),
       updatedAt: new Date(),
     };
@@ -33,6 +34,10 @@ export class ArtAssetsService {
 
   update(id: number, updateArtAssetDto: UpdateArtAssetDto): ArtAsset {
     const artAsset = this.findOne(id);
+
+    if (updateArtAssetDto.binaryFileId) {
+      artAsset.historyId.push(artAsset.binaryFileId);
+    }
     Object.assign(artAsset, updateArtAssetDto);
     artAsset.updatedAt = new Date();
     return artAsset;
