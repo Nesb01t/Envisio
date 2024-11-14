@@ -4,6 +4,7 @@ import { AppService } from './app.service';
 import { ArtAssetsModule } from './art-assets/art-assets.module';
 import { BinaryFilesModule } from './binary-files/binary-files.module';
 import { ConfigModule } from '@nestjs/config';
+import { TransformModule } from './transform/transform.module';
 
 @Module({
   imports: [
@@ -12,6 +13,7 @@ import { ConfigModule } from '@nestjs/config';
     }),
     ArtAssetsModule,
     BinaryFilesModule,
+    TransformModule,
   ],
   controllers: [AppController],
   providers: [AppService],
