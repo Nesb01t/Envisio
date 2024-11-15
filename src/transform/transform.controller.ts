@@ -7,57 +7,39 @@ import {
 } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { Response } from 'express';
-import { join } from 'path';
-import { exec } from 'child_process';
-import { promisify } from 'util';
-import { createReadStream, unlink, writeFile } from 'fs';
-
-const execAsync = promisify(exec);
-const unlinkAsync = promisify(unlink);
+import { TransformService } from './transform.service';
 
 @Controller('transform')
 export class TransformController {
-  @Post('upload')
+  constructor(private readonly transformService: TransformService) {}
+
+  @Post('litematic2schem')
   @UseInterceptors(FileInterceptor('file'))
-  async uploadLitematica(
+  async litematic2schem(
     @UploadedFile() file: Express.Multer.File,
     @Res() res: Response,
   ) {
-    const inputFilePath = join(__dirname, '..', '..', 'tmp', file.originalname);
-    const outputFilePath = join(
-      __dirname,
-      '..',
-      '..',
-      'tmp',
-      `${file.originalname}`.replace('.litematic', '.schem'),
-    );
-
-    await promisify(writeFile)(inputFilePath, file.buffer);
-
-    const jarFilePath = join(
-      __dirname,
-      '..',
-      '..',
-      'external',
-      'Lite2Edit.jar',
-    );
-    const command = `java -jar ${jarFilePath} --convert ${inputFilePath}`;
-    await execAsync(command);
-
-    console.log('[transform] Executed command');
-
-    const fileStream = createReadStream(outputFilePath);
+    const outputFile = await this.transformService.litematicToSchem(file);
     res.set({
       'Content-Type': 'application/octet-stream',
-      'Content-Disposition': `attachment; filename="converted_${file.originalname}"`,
+      'Content-Disposition': `attachment; filename="${outputFile.name}"`,
     });
-    fileStream.pipe(res).on('finish', async () => {
-      try {
-        await unlinkAsync(inputFilePath);
-        await unlinkAsync(outputFilePath);
-      } catch (error) {
-        console.error('Error deleting files:', error);
-      }
+    await res.send(outputFile);
+    await this.transformService.cleanupFile(outputFile);
+  }
+
+  @Post('schem2schematic')
+  @UseInterceptors(FileInterceptor('file'))
+  async schem2schematic(
+    @UploadedFile() file: Express.Multer.File,
+    @Res() res: Response,
+  ) {
+    const outputFile = await this.transformService.schemToSchematic(file);
+    res.set({
+      'Content-Type': 'application/octet-stream',
+      'Content-Disposition': `attachment; filename="${outputFile.name}"`,
     });
+    await res.send(outputFile);
+    await this.transformService.cleanupFile(outputFile);
   }
 }

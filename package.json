@@ -26,6 +26,11 @@
     "@nestjs/mapped-types": "*",
     "@nestjs/platform-express": "^10.4.7",
     "body-parser": "^1.20.3",
+    "chalk": "^5.2.0",
+    "fs-extra": "^11.2.0",
+    "gltf-pipeline": "^4.1.0",
+    "obj2gltf": "^3.1.6",
+    "prompts": "^2.4.2",
     "reflect-metadata": "^0.2.0",
     "rxjs": "^7.8.1"
   },

@@ -2,6 +2,9 @@
 /dist
 /node_modules
 /build
+.schem
+.schematic
+.litematic
 
 # Logs
 logs
@@ -45,6 +48,7 @@ lerna-debug.log*
 # temp directory
 .temp
 .tmp
+.minecraft
 
 # Runtime data
 pids
