@@ -22,7 +22,8 @@ export class TransformService {
 
     // transform and output schem file
     const transformCommand = `java -jar ${getLite2EditJarPath()} --convert ${originalFilePath}`;
-    await promisify(exec)(transformCommand);
+    const result = await promisify(exec)(transformCommand);
+    console.log(result);
 
     const outputFile = new File(
       [await promisify(readFile)(outputFilePath)],
@@ -35,8 +36,8 @@ export class TransformService {
     const originalName = file.originalname;
     const outputName = `${originalName}`.replace('.schem', '.schematic');
 
-    const originalFilePath = join(__dirname, '..', '..', 'tmp', originalName);
-    const outputFilePath = join(__dirname, '..', '..', 'tmp', outputName);
+    const originalFilePath = getTempFilePath(originalName);
+    const outputFilePath = getTempFilePath(outputName);
 
     // write file to filesystem
     await promisify(writeFile)(originalFilePath, file.buffer);
@@ -53,14 +54,46 @@ export class TransformService {
     return outputFile;
   }
 
-  async cleanupFile(file: File) {
-    const filePath = join(__dirname, '..', '..', 'tmp', file.name);
+  async schematicToObj(file: Express.Multer.File): Promise<File> {
+    const originalName = file.originalname;
+    const outputName = `${originalName}`.replace('.schematic', '.obj');
+
+    const originalFilePath = join(__dirname, '..', '..', 'tmp', originalName);
+    const outputFilePath = join(__dirname, '..', '..', 'tmp', outputName);
+    const minecraftRootFolderPath = join(__dirname, '..', '..', '.minecraft');
+
+    // write file to filesystem
+    await promisify(writeFile)(originalFilePath, file.buffer);
+
+    // transform and output schem file
+    const transformCommand = `java -jar ${getSchem2ObjJarPath()} -minecraftFolder ${minecraftRootFolderPath} -i ${originalFilePath} -o ${outputFilePath}`;
+    const result = await promisify(exec)(transformCommand);
+    console.log(result);
+
+    const outputFile = new File(
+      [await promisify(readFile)(outputFilePath)],
+      outputName,
+    );
+    return outputFile;
+  }
+
+  async cleanupFile(file: File | Express.Multer.File) {
+    const fileName = 'name' in file ? file.name : file.originalname;
+    const filePath = join(__dirname, '..', '..', 'tmp', fileName);
     await promisify(unlink)(filePath);
   }
 }
 
 const getLite2EditJarPath = () => {
   return join(__dirname, '..', '..', 'external', 'Lite2Edit.jar');
+};
+
+const getSchem2ObjJarPath = () => {
+  return join(__dirname, '..', '..', 'external', 'schem2obj.jar');
+};
+
+export const getTempFilePath = (fileName: string) => {
+  return join(__dirname, '..', '..', 'tmp', fileName);
 };
 
 async function promisifySchemToSchematic(

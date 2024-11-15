@@ -146,7 +146,7 @@ export function schemToSchematic(arrayBuffer, callback) {
 
     // Not in the table, try to find a match
     const originalKey = namespaceKey;
-    let index;
+    let index = 0;
 
     if (~(index = namespaceKey.indexOf('shape='))) {
       namespaceKey =
@@ -284,7 +284,7 @@ export function schemToSchematic(arrayBuffer, callback) {
     }
 
     if (~(index = namespaceKey.indexOf('up=false'))) {
-      tempkey =
+      const tempkey =
         namespaceKey.substr(0, index) +
         'up=true' +
         namespaceKey.substr(namespaceKey.indexOf(',', index));
@@ -295,7 +295,7 @@ export function schemToSchematic(arrayBuffer, callback) {
     }
 
     if (~(index = namespaceKey.indexOf('up=true'))) {
-      tempkey =
+      const tempkey =
         namespaceKey.substr(0, index) +
         'up=false' +
         namespaceKey.substr(namespaceKey.indexOf(',', index));
@@ -355,6 +355,7 @@ export function schemToSchematic(arrayBuffer, callback) {
     }
 
     if (
+      false &&
       ~(index = namespaceKey.indexOf('facing=')) &&
       ~namespaceKey.indexOf('hinge=')
     ) {
@@ -420,7 +421,7 @@ export function schemToSchematic(arrayBuffer, callback) {
     }
 
     if (~(index = originalKey.indexOf('powered=true'))) {
-      tempkey =
+      const tempkey =
         originalKey.substr(0, index) +
         'powered=false' +
         originalKey.substr(originalKey.indexOf(',', index));

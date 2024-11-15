@@ -2,9 +2,9 @@
 /dist
 /node_modules
 /build
-.schem
-.schematic
-.litematic
+*.schem
+*.schematic
+*.litematic
 
 # Logs
 logs

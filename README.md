@@ -1,8 +1,10 @@
 ## Transform Way
 
-1. [ Litematic -> Schem ] by Lite2Edit
-2. [ Schem -> Schematic ] by PureGero
-3. [ Schematic / Level.dat -> gltf ] by Mineways & MCPrep
+> mineways can only support transforming schematic or world files. but schematic is till minecraft version 1.12.2. so most of obj will be export by Litematic mod manually.
+
+1. ✅ [ Litematic -> Schem ] by Lite2Edit
+2. 🛠️ [ Schem -> Schematic ] by PureGero
+3. ✅ [ Schematic / Level.dat -> gltf ] by Mineways & MCPrep
 
 ## Thanks & Acknowledgements
 
@@ -14,6 +16,12 @@ I would express my gratitude to the following individuals and projects for their
 - **MCPrep Team** for the [MCPrep](https://theduckcow.com/dev/mcprep/) project, which helps in preparing Minecraft assets for Blender.
 
 Their work has been invaluable in the development of this project.
+
+Some discussion collected:
+
+1. [reddit/how mineways support schem file](https://www.reddit.com/r/mineways/comments/so5jog/mineways_wont_accept_schem_files/)
+
+2. [mineways github issues about schem file](https://github.com/erich666/Mineways/issues/40)
 
 ### Lite2Edit License
 

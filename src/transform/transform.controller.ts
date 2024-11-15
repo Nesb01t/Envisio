@@ -4,10 +4,12 @@ import {
   UploadedFile,
   UseInterceptors,
   Res,
+  StreamableFile,
 } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { Response } from 'express';
-import { TransformService } from './transform.service';
+import { getTempFilePath, TransformService } from './transform.service';
+import { createReadStream } from 'fs';
 
 @Controller('transform')
 export class TransformController {
@@ -24,8 +26,11 @@ export class TransformController {
       'Content-Type': 'application/octet-stream',
       'Content-Disposition': `attachment; filename="${outputFile.name}"`,
     });
-    await res.send(outputFile);
-    await this.transformService.cleanupFile(outputFile);
+
+    const filePath = getTempFilePath(outputFile.name);
+    createReadStream(filePath).pipe(res);
+    // await this.transformService.cleanupFile(file);
+    // await this.transformService.cleanupFile(outputFile);
   }
 
   @Post('schem2schematic')
@@ -39,7 +44,26 @@ export class TransformController {
       'Content-Type': 'application/octet-stream',
       'Content-Disposition': `attachment; filename="${outputFile.name}"`,
     });
-    await res.send(outputFile);
-    await this.transformService.cleanupFile(outputFile);
+    const filePath = getTempFilePath(outputFile.name);
+    createReadStream(filePath).pipe(res);
+    // await this.transformService.cleanupFile(file);
+    // await this.transformService.cleanupFile(outputFile);
+  }
+
+  @Post('schematic2obj')
+  @UseInterceptors(FileInterceptor('file'))
+  async schematic2obj(
+    @UploadedFile() file: Express.Multer.File,
+    @Res() res: Response,
+  ) {
+    const outputFile = await this.transformService.schematicToObj(file);
+    res.set({
+      'Content-Type': 'application/octet-stream',
+      'Content-Disposition': `attachment; filename="${outputFile.name}"`,
+    });
+    const filePath = getTempFilePath(outputFile.name);
+    createReadStream(filePath).pipe(res);
+    // await this.transformService.cleanupFile(file);
+    // await this.transformService.cleanupFile(outputFile);
   }
 }
